@@ -47,6 +47,10 @@ namespace freecodecamp.Controllers
                 return NotFound();
             }
             var category = _db.Categories.Find(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
         
             return View(category);
         }
@@ -59,11 +63,43 @@ namespace freecodecamp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(obj);
+                _db.Categories.Update(obj);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(obj);
+        }
+
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var category = _db.Categories.Find(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePOST(int? id)
+        {
+                var obj = _db.Categories.Find(id);
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                _db.Categories.Remove(obj);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+          
         }
     }
 }
